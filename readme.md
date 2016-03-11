@@ -91,7 +91,7 @@ By default, the following classes will be added:
 <ol class="list--ol">
 <li class="list__item">
 <em class="markup--em">
-<em class="markup--strong">
+<strong class="markup--strong">
 <del class="markup--strikethrough">
 <img src="…" class="markup--image">
 <a href="http://example.com/" class="anchor">A link</a>
