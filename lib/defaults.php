@@ -44,9 +44,9 @@ class Defaults {
       },
 
       // Tables
-      'table.base'               => 'table',
+      'table.base'               => '{prefix}table',
       'table.cell.base'          => '{table.base}__cell',
-      'table'                    => '{prefix}{table.base}',
+      'table'                    => '{table.base}',
 
       'table.body'               => '{table.base}__body',
       'table.body.row'           => '{table.base}__row {table.base}__row--body',
