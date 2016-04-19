@@ -7,29 +7,36 @@ use kirby;
 if (!c::get('classymarkdown')) return;
 
 load([
-  'classymarkdown\\transformer'   => __DIR__ . DS . 'lib' . DS . 'transformer.php',
-  'classymarkdown\\defaults'      => __DIR__ . DS . 'lib' . DS . 'defaults.php',
-  'classymarkdown\\markdown'      => __DIR__ . DS . 'lib' . DS . 'markdown.php',
-  'classymarkdown\\markdownextra' => __DIR__ . DS . 'lib' . DS . 'markdownextra.php',
+  'classymarkdown\\transformer'         => __DIR__ . DS . 'lib' . DS . 'transformer.php',
+  'classymarkdown\\defaults'            => __DIR__ . DS . 'lib' . DS . 'defaults.php',
+  'classymarkdown\\markdown'            => __DIR__ . DS . 'lib' . DS . 'markdown.php',
+  'classymarkdown\\markdownextra'       => __DIR__ . DS . 'lib' . DS . 'markdownextra.php',
+  
+  // Markdown Component for Kirby 2.3.0+
+  'classymarkdown\\component\\markdown' => __DIR__ . DS . 'lib' . DS . 'component' . DS . 'markdown.php',
 ]);
 
+$kirby = kirby();
 
-$parsedownSettings = c::get('classymarkdown.classes', []);
+if (version_compare($kirby->version(), '2.3.0', '>=')) {
+  // Register ClassyMarkdown as component for Kirby 2.3.0+
+  $kirby->set('component', 'markdown', '\\ClassyMarkdown\\Component\\Markdown');
+} else {
+  // Register as closure for older versions of Kirby
+  if (!c::get('markdown.parser')) {
+    $classyMarkdownSettings = c::get('classymarkdown.classes', []);
+    
+    $kirby->options['markdown.parser'] = function($markdown) use ($kirby, $classyMarkdownSettings) {
 
-$kirby = kirby::instance();
+      // initialize the right markdown class
+      $parsedown = $kirby->option('markdown.extra') ? new MarkdownExtra($classyMarkdownSettings) : new Markdown($classyMarkdownSettings);
 
-// default markdown parser callback
-if (!c::get('markdown.parser')) {
-  $kirby->options['markdown.parser'] = function($text) use ($kirby, $parsedownSettings) {
+      // set markdown auto-breaks
+      $parsedown->setBreaksEnabled($kirby->option('markdown.breaks'));
 
-    // initialize the right markdown class
-    $parsedown = $kirby->option('markdown.extra') ? new MarkdownExtra($parsedownSettings) : new Markdown($parsedownSettings);
+      // parse it!
+      return $parsedown->text($markdown);
 
-    // set markdown auto-breaks
-    $parsedown->setBreaksEnabled(kirby::instance()->option('markdown.breaks'));
-
-    // parse it!
-    return $parsedown->text($text);
-
-  };
+    };
+  }
 }
