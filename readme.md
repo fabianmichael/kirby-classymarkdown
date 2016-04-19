@@ -247,7 +247,7 @@ The plugin itself does not contain any third-party libraries, but relies on
 
 ### [2016/04/19] Version 0.2.0
 
-- 
+- Compatibility with Kirby 2.3.0 (Beta)
 
 ### [2016/03/21] Version 0.1.3
 
