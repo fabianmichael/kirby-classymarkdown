@@ -1,14 +1,13 @@
 <?php
 
 namespace ClassyMarkdown;
-use c;
+use C;
 use Exception;
-use str;
+use Str;
 
 trait Transformer {
 
   public $settings;
-
   protected $maxClassNameResolveIterations = 5;
 
   public function __construct(array $settings = []) {
@@ -19,12 +18,9 @@ trait Transformer {
       parent::__construct();
     }
 
-    $this->settings = array_merge(
-      Defaults::get(),
-      $settings
-    );
+    $this->settings = Settings::instance();
   }
-
+  
   public function text($text) {
     return parent::text($text);
   }
@@ -35,7 +31,7 @@ trait Transformer {
     if (!$vars) {
       // Filter out closures from settings, because they cannot be used as
       // placeholders in class names
-      $vars = array_filter($this->settings, function($v) { return !is_callable($v); });
+      $vars = array_filter($this->settings->classes, function($v) { return !is_callable($v); });
     }
 
     return $vars;
@@ -100,35 +96,35 @@ trait Transformer {
   protected function inlineLink($Excerpt) {
     return $this->setElementClass(
       parent::inlineLink($Excerpt),
-      $this->settings['link']
+      $this->settings->className('link')
     );
   }
 
   protected function inlineUrl($Excerpt) {
     return $this->setElementClass(
       parent::inlineUrl($Excerpt),
-      $this->settings['link']
+      $this->settings->className('link')
     );
   }
 
   protected function inlineUrlTag($Excerpt) {
     return $this->setElementClass(
       parent::inlineUrl($Excerpt),
-      $this->settings['link']
+      $this->settings->className('link')
     );
   }
 
   protected function inlineEmailTag($Excerpt) {
     return $this->setElementClass(
       parent::inlineEmailTag($Excerpt),
-      $this->settings['email']
+      $this->settings->className('email')
     );
   }
 
   protected function blockList($Line) {
     $Block = $this->setElementClass(
       parent::blockList($Line),
-      $this->settings['list']
+      $this->settings->className('list')
     );
 
     if (!$Block) return;
@@ -137,17 +133,9 @@ trait Transformer {
       'parent' => $Block['element']['name'],
     ];
 
-    if (!empty($this->settings['list.nested'])) {
-      if (!$this->listElementHash) {
-        $this->listElementHash = sha1(microtime(true));
-      }
-
-      $Block['element']['attributes']["data-{$this->listElementHash}"] = 1;
-    }
-
     $Block['element']['text'][0] = $this->setElementClass(
       ['element' => $Block['element']['text'][0]],
-      $this->settings['list.item'],
+      $this->settings->className('list.item'),
       $variables
     )['element'];
 
@@ -162,7 +150,7 @@ trait Transformer {
     $last = sizeof($Block['element']['text']) - 1;
     $Block['element']['text'][$last] = $this->setElementClass(
       ['element' => $Block['element']['text'][$last]],
-      $this->settings['list.item'],
+      $this->settings->className('list.item'),
       [ 'parent' => $Block['element']['name'] ]
     )['element'];
 
@@ -183,7 +171,7 @@ trait Transformer {
 
     $markup = parent::li($lines);
 
-    if (empty($this->settings['paragraph'])) {
+    if (empty($this->settings->className('paragraph'))) {
       return $markup;
     };
 
@@ -191,7 +179,7 @@ trait Transformer {
 
     $paragraphClassName = $this->getClassName(
       $this->getFakeElement('p'),
-      $this->settings['paragraph']
+      $this->settings->className('paragraph')
     );
 
     if (empty($paragraphClassName))
@@ -220,7 +208,7 @@ trait Transformer {
   protected function paragraph($Line) {
     $Block = $this->setElementClass(
       parent::paragraph($Line),
-      $this->settings['paragraph']
+      $this->settings->className('paragraph')
     );
 
     return $Block;
@@ -233,7 +221,7 @@ trait Transformer {
 
     $Block = $this->setElementClass(
       $Block,
-      $this->settings['header'],
+      $this->settings->className('header'),
       [ 'level' => substr($Block['element']['name'], 1) ]
     );
 
@@ -243,49 +231,49 @@ trait Transformer {
   protected function blockCode($Line, $Block = null) {
     return $this->setElementClass(
       parent::blockCode($Line, $Block),
-      $this->settings['code.block']
+      $this->settings->className('code.block')
     );
   }
 
   protected function blockFencedCode($Line) {
     return $this->setElementClass(
       parent::blockFencedCode($Line),
-      $this->settings['code.block']
+      $this->settings->className('code.block')
     );
   }
 
   protected function blockRule($Line) {
     return $this->setElementClass(
       parent::blockRule($Line),
-      $this->settings['rule']
+      $this->settings->className('rule')
     );
   }
 
   protected function inlineEmphasis($Excerpt) {
     return $this->setElementClass(
       parent::inlineEmphasis($Excerpt),
-      $this->settings['emphasis']
+      $this->settings->className('emphasis')
     );
   }
 
   protected function inlineStrikethrough($Excerpt) {
     return $this->setElementClass(
       parent::inlineStrikethrough($Excerpt),
-      $this->settings['strikethrough']
+      $this->settings->className('strikethrough')
     );
   }
 
   protected function inlineCode($Excerpt) {
     return $this->setElementClass(
       parent::inlineCode($Excerpt),
-      $this->settings['code.inline']
+      $this->settings->className('code.inline')
     );
   }
 
   protected function blockQuote($Line) {
     return $this->setElementClass(
       parent::blockQuote($Line),
-      $this->settings['blockquote']
+      $this->settings->className('blockquote')
     );
   }
 
@@ -302,14 +290,14 @@ trait Transformer {
 
     return $this->setElementClass(
       $Inline,
-      $this->settings['image']
+      $this->settings->className('image')
     );
   }
 
   protected function blockTable($Line, array $Block = null) {
     $Block = $this->setElementClass(
       parent::blockTable($Line, $Block),
-      $this->settings['table']
+      $this->settings->className('table')
     );
 
     if (!$Block) return;
@@ -317,30 +305,30 @@ trait Transformer {
     // thead
     $Block['element']['text'][0] = $this->setElementClass(
       [ 'element' => $Block['element']['text'][0] ],
-      $this->settings['table.head']
+      $this->settings->className('table.head')
     )['element'];
 
     // thead > tr {
     $Block['element']['text'][0]['text'][0] = $this->setElementClass(
       [ 'element' => $Block['element']['text'][0]['text'][0] ],
-      $this->settings['table.head.row']
+      $this->settings->className('table.head.row')
     )['element'];
 
     // thead > th
     foreach ($Block['element']['text'][0]['text'][0]['text'] as $i => $th) {
 
-      if ($Block['alignments'][$i] !== null && !empty($this->settings['table.head.cell.aligned'])) {
+      if ($Block['alignments'][$i] !== null && !empty($this->settings->className('table.head.cell.aligned'))) {
         // convert alignment inline style to class
         $th = $this->setElementClass(
           [ 'element' => $th ],
-          $this->settings['table.head.cell.aligned'],
+          $this->settings->className('table.head.cell.aligned'),
           [ 'align' => $Block['alignments'][$i] ]
         )['element'];
         unset($th['attributes']['style']);
       } else {
         $th = $this->setElementClass(
           [ 'element' => $th ],
-          $this->settings['table.head.cell']
+          $this->settings->className('table.head.cell')
         )['element'];
       }
 
@@ -350,7 +338,7 @@ trait Transformer {
     // tbody
     $Block['element']['text'][1] = $this->setElementClass(
       [ 'element' => $Block['element']['text'][1] ],
-      $this->settings['table.body']
+      $this->settings->className('table.body')
     )['element'];
 
     return $Block;
@@ -365,24 +353,24 @@ trait Transformer {
     foreach ($Block['element']['text'][1]['text'] as $i => $tr) {
       $tr = $this->setElementClass(
         ['element' => $tr ],
-        $this->settings['table.body.row']
+        $this->settings->className('table.body.row')
       )['element'];
 
       // td
       foreach ($tr['text'] as $j => $td) {
 
-        if ($Block['alignments'][$j] !== null && !empty($this->settings['table.body.cell.aligned'])) {
+        if ($Block['alignments'][$j] !== null && !empty($this->settings->className('table.body.cell.aligned'))) {
           // convert alignment inline style to class
           $td = $this->setElementClass(
             [ 'element' => $td ],
-            $this->settings['table.body.cell.aligned'],
+            $this->settings->className('table.body.cell.aligned'),
             [ 'align' => $Block['alignments'][$j] ]
           )['element'];
           unset($td['attributes']['style']);
         } else {
           $td = $this->setElementClass(
             ['element' => $td ],
-            $this->settings['table.body.cell']
+            $this->settings->className('table.body.cell')
           )['element'];
         }
 
@@ -393,5 +381,5 @@ trait Transformer {
     }
 
     return $Block;
-  }
+  }  
 }

@@ -21,7 +21,7 @@ class MarkdownExtra extends \ParsedownExtra {
 
               $className = $this->getClassName(
                 $this->getFakeElement('abbr', $abbreviation),
-                $this->settings['abbreviation']
+                $this->settings->className('abbreviation')
               );
 
               $classAttribute = !empty($className) ? " class=\"$className\"" : '';
@@ -39,7 +39,7 @@ class MarkdownExtra extends \ParsedownExtra {
 
     $className = $this->getClassName(
       $this->getFakeElement('dl'),
-      $this->settings['definition.list']
+      $this->settings->className('definition.list')
     );
 
     if (!empty($className)) {
@@ -52,14 +52,14 @@ class MarkdownExtra extends \ParsedownExtra {
   protected function blockDefinitionList($Line, $Block) {
     $Block = $this->setElementClass(
       parent::blockDefinitionList($Line, $Block),
-      $this->settings['definition.list']
+      $this->settings->className('definition.list')
     );
 
     if (!$Block) return;
 
     $Block['element']['text'][0] = $this->setElementClass(
       ['element' => $Block['element']['text'][0]],
-      $this->settings['definition.term']
+      $this->settings->className('definition.term')
     )['element'];
 
     return $Block;
@@ -72,7 +72,7 @@ class MarkdownExtra extends \ParsedownExtra {
 
     $Block['dd'] = $this->setElementClass(
       ['element' => $Block['dd']],
-      $this->settings['definition.description']
+      $this->settings->className('definition.description')
     )['element'];
 
     return $Block;
@@ -88,15 +88,15 @@ class MarkdownExtra extends \ParsedownExtra {
     // <sup>
     $Inline = $this->setElementClass(
       $Inline,
-      $this->settings['footnote.marker.wrapper']
+      $this->settings->className('footnote.marker.wrapper')
     );
 
     // <a>
-    if (!empty($this->settings['footnote.marker.link'])) {
+    if (!empty($this->settings->className('footnote.marker.link'))) {
       unset($Inline['element']['text']['attributes']['class']);
       $Inline['element']['text'] = $this->setElementClass(
         ['element' => $Inline['element']['text']],
-        $this->settings['footnote.marker.link']
+        $this->settings->className('footnote.marker.link')
       )['element'];
     }
 
@@ -112,7 +112,7 @@ class MarkdownExtra extends \ParsedownExtra {
     // Container
     $containerClass = $this->getClassName(
       [ 'element' => $Element ],
-      $this->settings['footnotes.container']
+      $this->settings->className('footnotes.container')
     );
 
     if ($containerClass !== 'footnotes') {
@@ -122,7 +122,7 @@ class MarkdownExtra extends \ParsedownExtra {
     // Separator
     $separatorClass = $this->getClassName(
       ['element' => $Element['text'][0]],
-      $this->settings['footnotes.separator']
+      $this->settings->className('footnotes.separator')
     );
 
     if (!empty($containerClass)) {
@@ -132,7 +132,7 @@ class MarkdownExtra extends \ParsedownExtra {
     // List
     $listClass = $this->getClassName(
       ['element' => $Element['text'][1]],
-      $this->settings['footnotes.list']
+      $this->settings->className('footnotes.list')
     );
 
     if (!empty($listClass)) {
@@ -147,7 +147,7 @@ class MarkdownExtra extends \ParsedownExtra {
       // List Item Class
       $Element['text'][1]['text'][$i] = $this->setElementClass(
         ['element' => $Element['text'][1]['text'][$i]],
-        $this->settings['footnotes.list.item'],
+        $this->settings->className('footnotes.list.item'),
         [ 'parent' => $Element['text'][1]['name'] ]
       )['element'];
 
@@ -164,7 +164,7 @@ class MarkdownExtra extends \ParsedownExtra {
               ],
               'text' => '&#8617;',
             ]],
-            $this->settings['footnotes.backref']
+            $this->settings->className('footnotes.backref')
           );
 
           return '<a href="#fnref' . $matches[2] . ':' . $matches[3] . '" rev="footnote" class="' . $backrefClass . '">&#8617;</a>';

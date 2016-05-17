@@ -2,13 +2,14 @@
 
 namespace ClassyMarkdown;
 use c;
-use kirby;
+use Kirby;
+use Kirbytext;
 
 if (!c::get('classymarkdown')) return;
 
 load([
+  'classymarkdown\\settings'            => __DIR__ . DS . 'lib' . DS . 'settings.php',
   'classymarkdown\\transformer'         => __DIR__ . DS . 'lib' . DS . 'transformer.php',
-  'classymarkdown\\defaults'            => __DIR__ . DS . 'lib' . DS . 'defaults.php',
   'classymarkdown\\markdown'            => __DIR__ . DS . 'lib' . DS . 'markdown.php',
   'classymarkdown\\markdownextra'       => __DIR__ . DS . 'lib' . DS . 'markdownextra.php',
   
@@ -24,12 +25,10 @@ if (version_compare($kirby->version(), '2.3.0', '>=')) {
 } else {
   // Register as closure for older versions of Kirby
   if (!c::get('markdown.parser')) {
-    $classyMarkdownSettings = c::get('classymarkdown.classes', []);
-    
-    $kirby->options['markdown.parser'] = function($markdown) use ($kirby, $classyMarkdownSettings) {
+    $kirby->options['markdown.parser'] = function($markdown) use ($kirby) {
 
       // initialize the right markdown class
-      $parsedown = $kirby->option('markdown.extra') ? new MarkdownExtra($classyMarkdownSettings) : new Markdown($classyMarkdownSettings);
+      $parsedown = $kirby->option('markdown.extra') ? new MarkdownExtra() : new Markdown();
 
       // set markdown auto-breaks
       $parsedown->setBreaksEnabled($kirby->option('markdown.breaks'));

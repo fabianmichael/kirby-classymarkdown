@@ -1,7 +1,6 @@
 <?php 
 
 namespace ClassyMarkdown\Component;
-use C;
 
 class Markdown extends \Kirby\Component\Markdown {
 
@@ -13,17 +12,12 @@ class Markdown extends \Kirby\Component\Markdown {
    * @return string
    */  
   public function parse($markdown) {
-    static $classyMarkdownSettings;
-    
     try {
-      if (is_null($classyMarkdownSettings)) {
-        $classyMarkdownSettings = c::get('classymarkdown.classes', []);  
-      }
 
       // initialize the right markdown class
       $parsedown = $this->kirby->options['markdown.extra'] ?
-        new \ClassyMarkdown\MarkdownExtra($classyMarkdownSettings) :
-        new \ClassyMarkdown\Markdown($classyMarkdownSettings);
+        new \ClassyMarkdown\MarkdownExtra() :
+        new \ClassyMarkdown\Markdown();
 
       // set markdown auto-breaks
       $parsedown->setBreaksEnabled($this->kirby->options['markdown.extra']);
