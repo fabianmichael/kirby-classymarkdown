@@ -1,0 +1,17 @@
+{
+  "name": "classymarkdown",
+  "version": "0.3.1",
+  "description": "Adds classes to your markdown output.",
+  "main": "classymarkdown.php",
+  "type": "kirby-plugin",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "https://github.com/fabianmichael/kirby-typography",
+  "author": "Fabian Michael",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fabianmichael/kirby-classymarkdown/issues"
+  },
+  "homepage": "https://github.com/fabianmichael/kirby-classymarkdown#readme"
+}
