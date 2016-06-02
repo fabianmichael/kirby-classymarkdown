@@ -20,7 +20,7 @@ class Markdown extends \Kirby\Component\Markdown {
         new \ClassyMarkdown\Markdown();
 
       // set markdown auto-breaks
-      $parsedown->setBreaksEnabled($this->kirby->options['markdown.extra']);
+      $parsedown->setBreaksEnabled($this->kirby->options['markdown.breaks']);
 
       // parse it!
       return $parsedown->text($markdown);
