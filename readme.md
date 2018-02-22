@@ -34,7 +34,7 @@ You’ll end up with a red-underlined image, which is probably not, what your in
 
 ```html
 <div class="content">
-    <p>A nice introduction with a link to another <a href="http://getkirby.com" class="markup-link">website</p>
+    <p>A nice introduction with a link to another <a href="http://getkirby.com" class="markup--link">website</p>
     <figure>
         <a href="image-full.jpg">
             <img src="thumbnail.jpg" alt="A nice image" class="markup--image">
