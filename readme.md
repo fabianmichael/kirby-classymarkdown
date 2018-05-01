@@ -5,6 +5,8 @@ the built-in Markdown parser.
 
 Current version: `0.3.1`
 
+⚠️ This plugin is deprecated. The current version should run without any major flaws in Kirby 2.x, but will not be udated for the upcoming Kirby 3 any more. If you are interested in maintaining the plugin, please send me a mail to <hallo@fabianmichael.de>.
+
 ## What is it good for?
 
 When dealing with complex content, i.e. nested components inside your [Markdown](https://daringfireball.net/projects/markdown/)-formatted texts, you often face the problem of [side effects](http://philipwalton.com/articles/side-effects-in-css/). To avoid this, a lot of developers use BEM-Naming convention these days. That basically means, that every kind of element you want to target with a CSS-selector has it’s own, unique classes. See example below for details.
